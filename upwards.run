@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# var
+_path_now=$(pwd);
+_check_path=$1
+
+if test -d ${_check_path}
+then
+    :
+else
+    echo 'Args Error! Target-directory is not exists.'
+    exit
+fi
+
+_check_path=$(cd ${_check_path}; pwd); cd ${_path_now};
+__check_name=$(basename ${_check_path})
+
+__parent_path=$(cd $(dirname ${_check_path}); pwd); cd ${_path_now}
+__parent_name=$(basename ${__parent_path})
+
+
+
+
+
+# judgment __check_name and __parent_name
+if [ ${__check_name} == ${__parent_name} ]
+then
+    cd ${_check_path}
+    find . -type f -print0 | xargs -I{} -0 mv {} ${__parent_path}/{}
+    cd ${_path_now}
+    rmdir ${_check_path}
+fi

@@ -1,0 +1,35 @@
+#!/bin/sh
+# 解压缩专用shell程序
+
+# Variable
+_path_now=$(pwd)
+_file_path=$1
+_f_dir_path=$(cd $(dirname $_file_path); pwd);cd $_path_now
+
+
+# arguments check
+if [ "$_file_path" = "" ]
+then
+	echo 'Args Error! filePath is Valid'
+	exit 0
+else
+	if test -f $_file_path
+	then
+		null;
+	else
+		echo 'Args Error! filePath is not exists!'
+		exit 0
+	fi
+fi
+
+
+
+
+
+
+# unachive file
+unrar x -y $_file_path $_f_dir_path
+find $_f_dir_path -name "asset_*" -print0 | xargs -t -0 -n1 rm -rf 
+find $_f_dir_path -name "readme.txt" -print0 | xargs -t -0 -n1 rm -rf
+find $_f_dir_path -name "*.url" -print0 | xargs -t -0 -n1 rm -rf 
+find $_f_dir_path -name "*]*" -print0 | xargs -t -0 -n1 rm -rf

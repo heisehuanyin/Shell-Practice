@@ -1,0 +1,60 @@
+#!/bin/sh
+# 筛选和转移指定目录下的图片到指定目录
+
+# Variable
+_path_now=$(pwd)
+_src_dir=$1
+_dst_dir=$2
+
+
+
+
+# check args valid
+if test -d ${_src_dir}
+then
+    if test -d ${_dst_dir}
+    then
+        :
+    else
+        echo 'Args Error! Destination-directory not exists.'
+        exit 0
+    fi
+else
+    echo 'Args Error! Source-directory not exists.'
+    exit 0;
+fi
+
+__b_src=$(basename ${_src_dir})
+__b_dst=$(basename ${_dst_dir})
+_src_dir="$(cd $(dirname ${_src_dir}); pwd)/${__b_src}"; cd ${_path_now};
+_dst_dir="$(cd $(dirname ${_dst_dir}); pwd)/${__b_dst}"; cd ${_path_now}
+
+if [ ${_dst_dir} == ${_src_dir} ]
+then
+    echo 'Args Error! Destination equals Source.'
+    exit 0
+fi
+
+_dst_dir="${_dst_dir}/${__b_src}"
+
+
+
+
+# async dir-list
+if test -d ${_dst_dir}
+then
+    rm -rf ${_dst_dir}
+fi
+mkdir ${_dst_dir}
+
+
+cd ${_src_dir}
+find . -type d -print0 | xargs -t -n1 -0 -I{} mkdir "${_dst_dir}/{}"
+
+
+
+
+# async file
+find . -name "*.png" -print0 | xargs -t -0 -n1 -I{} mv {} "${_dst_dir}/{}"
+find . -name "*.jpg" -print0 | xargs -t -0 -n1 -I{} mv {} "${_dst_dir}/{}"
+cd ${_path_now}
